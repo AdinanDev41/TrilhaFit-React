@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { filtrarTreinos, formatarTempo } from './treinos.utils';
+import { filtrarPorNivel, filtrarTreinos, formatarTempo } from './treinos.utils';
 import type { Treino } from './types';
 
 const treinosFalsos: Treino[] = [
@@ -38,6 +38,21 @@ describe('formatarTempo', () => {
   });
 });
 
+describe('filtrarPorNivel', () => {
+  it('filtra treinos pelo nível selecionado', () => {
+    const resultado = filtrarPorNivel(treinosFalsos, 'iniciante');
+
+    expect(resultado).toHaveLength(1);
+    expect(resultado[0].nivel).toBe('iniciante');
+  });
+
+  it('retorna todos os treinos quando o nível é todos', () => {
+    const resultado = filtrarPorNivel(treinosFalsos, 'todos');
+
+    expect(resultado).toHaveLength(2);
+  });
+});
+
 describe('filtrarTreinos', () => {
   it('retorna todos os treinos quando o termo está vazio', () => {
     expect(filtrarTreinos(treinosFalsos, '')).toHaveLength(2);
@@ -56,14 +71,26 @@ describe('filtrarTreinos', () => {
   });
 
   it('filtra por nível', () => {
-    const resultado = filtrarTreinos(treinosFalsos, '', 'todos', 'iniciante');
-    expect(resultado).toHaveLength(1);
-    expect(resultado[0].nivel).toBe('iniciante');
+  const resultado = filtrarPorNivel(treinosFalsos, 'iniciante');
+
+  expect(resultado).toHaveLength(1);
+  expect(resultado[0].nivel).toBe('iniciante');
   });
 
   it('combina termo, grupo e nível', () => {
-    const resultado = filtrarTreinos(treinosFalsos, 'peito', 'peito', 'intermediario');
-    expect(resultado).toHaveLength(1);
-    expect(resultado[0].id).toBe('1');
+  const resultadoTermoEGrupo = filtrarTreinos(
+    treinosFalsos,
+    'peito',
+    'peito'
+  );
+
+  const resultado = filtrarPorNivel(
+    resultadoTermoEGrupo,
+    'intermediario'
+  );
+
+  expect(resultado).toHaveLength(1);
+  expect(resultado[0].id).toBe('1');
+
   });
 });

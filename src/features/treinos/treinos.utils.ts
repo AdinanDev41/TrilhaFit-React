@@ -9,7 +9,6 @@ export function filtrarTreinos(
   treinos: Treino[],
   termo: string,
   grupoMuscular?: GrupoMuscular | 'todos',
-  nivel?: Nivel | 'todos'
 ): Treino[] {
   const termoNormalizado = termo.trim().toLowerCase();
 
@@ -23,11 +22,18 @@ export function filtrarTreinos(
     const combinaGrupo =
       !grupoMuscular || grupoMuscular === 'todos' || treino.grupoMuscular.includes(grupoMuscular);
 
-    const combinaNivel = !nivel || nivel === 'todos' || treino.nivel === nivel;
-
-    return combinaTermo && combinaGrupo && combinaNivel;
+    return combinaTermo && combinaGrupo;
   });
 }
+
+export function filtrarPorNivel(treinos: Treino[], nivel: Nivel | 'todos'): Treino[] {
+  if (nivel === 'todos') {
+    return treinos;
+  }
+  
+  return treinos.filter((treino) => treino.nivel === nivel);
+}
+
 
 /**
  * Filtra treinos por categoria (força, cardio, mobilidade).

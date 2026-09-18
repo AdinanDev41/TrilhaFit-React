@@ -5,7 +5,7 @@ import { MensagemErro } from '../../../components/MensagemErro';
 import { ListaTreinos } from '../components/ListaTreinos';
 import { useTreinos } from '../hooks/useTreinos';
 import { useDebounce } from '../hooks/useDebounce';
-import { filtrarTreinos } from '../treinos.utils';
+import { filtrarPorNivel, filtrarTreinos } from '../treinos.utils';
 import { GRUPOS_MUSCULARES, NIVEIS, ROTULO_GRUPO, ROTULO_NIVEL } from '../types';
 import type { GrupoMuscular, Nivel } from '../types';
 
@@ -20,10 +20,16 @@ export function CatalogoPage() {
   // useMemo evita refazer o filtro em toda renderização — só recalcula
   // quando a lista de treinos ou algum dos critérios de fato muda.
   const treinosFiltrados = useMemo(() => {
-    if (!treinos) return [];
-    return filtrarTreinos(treinos, termoDebounced, grupoSelecionado, nivelSelecionado);
-  }, [treinos, termoDebounced, grupoSelecionado, nivelSelecionado]);
+  if (!treinos) return [];
 
+  const treinosPorTermoEGrupo = filtrarTreinos(
+    treinos,
+    termoDebounced,
+    grupoSelecionado
+  );
+
+  return filtrarPorNivel(treinosPorTermoEGrupo, nivelSelecionado);
+  }, [treinos, termoDebounced, grupoSelecionado, nivelSelecionado]);
   return (
     <div className="pagina">
       <header className="pagina__cabecalho">
